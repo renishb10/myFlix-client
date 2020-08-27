@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 
+import { BrowserRouter as Router, Route} from "react-router-dom";
+
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -12,14 +14,14 @@ import { RegistrationView } from "../registration-view/registration-view";
 
 export class MainView extends React.Component {
   constructor() {
-      super();
-  
-      this.state = {
-          movies: null,
-          selectedMovie: null,
-          user: null,
-          register: false,
-      };
+    super();
+
+    this.state = {
+        movies: null,
+        selectedMovie: null,
+        user: null,
+        register: false,
+    };
   }    
   
   componentDidMount() {
@@ -103,7 +105,6 @@ export class MainView extends React.Component {
             )}
           </Row>
         </Container>
-
       </div>
     );
   }
