@@ -8,14 +8,12 @@ import Card from 'react-bootstrap/Card';
 import "./movie-card.scss";
 
 export class MovieCard extends Component {
-  render() {
-    /* This is given to the <MovieCard/> component by the outer world which, in this case, is `MainView`, */
-    /* as `MainView` is what’s connected to your database via the movies endpoint of your API */
-    const { movie, click } = this.props;
-
+render() {
+  const { movie, click } = this.props;
+  const host = window.location.href;
     return (
       <Card className="mb-3 mb-sm-4" style={{ width: '16rem' }}>
-        <Card.Img variant="top" src={movie.ImagePath} />
+        <Card.Img variant="top" src={ movie.ImagePath} />
         <Card.Body>
           <Card.Title>{movie.Title}</Card.Title>
           <Card.Text>{movie.Description}</Card.Text>
@@ -31,7 +29,7 @@ MovieCard.propTypes = {
     Title: PropTypes.string.isRequired,
     Year: PropTypes.string.isRequired,
     Description: PropTypes.string.isRequired,
-    ImageURL: PropTypes.string.isRequired,
+    ImagePath: PropTypes.string.isRequired,
     Genre: PropTypes.shape({
       Name: PropTypes.string,
       Description: PropTypes.string
@@ -41,8 +39,8 @@ MovieCard.propTypes = {
       Description: PropTypes.string,
       Birth: PropTypes.string
     }),
-    Featured: PropTypes.bool
+    Featured: PropTypes.boolean
   }).isRequired,
-    Actors:PropTypes.string,
-    click: PropTypes.func.isRequired
+  Actors:PropTypes.array,
+  click: PropTypes.func.isRequired
 };
