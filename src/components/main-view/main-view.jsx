@@ -1,12 +1,17 @@
 import React from 'react';
 import axios from 'axios';
 
+import { connect } from 'react-redux';
+
 import { BrowserRouter as Router, Route} from "react-router-dom";
 
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 
+import { setMovies } from '../../actions/actions';
+
+import MoviesList from '../movies-list/movies-list';
 import { LoginView } from '../login-view/login-view';
 import { MovieCard } from '../movie-card/movie-card';
 import { MovieView } from '../movie-view/movie-view';
@@ -45,10 +50,7 @@ export class MainView extends React.Component {
       headers: { Authorization: `Bearer ${token}`}
     })
     .then(response => {
-      // Assign the result to the state
-      this.setState({
-        movies: response.data
-      });
+      this.props.setMovies(response.data);
     })
     .catch(function (error) {
       console.log(error);
@@ -78,34 +80,29 @@ export class MainView extends React.Component {
     
     
   render() {
-    const { movies, selectedMovie, user, register } = this.state;
+    const { movies } = this.props; 
+    const { selectedMovie, user, register } = this.state;
     if (!user && !register) return <LoginView onClick={this.onRegister} onLoggedIn={user => this.onLoggedIn(user)} />
     if (register) return <RegistrationView onCLick={() => this.alreadyMember()}onloggedIn={(user) => this.onloggedIn(user)}  />
     if (!movies) return <div className="main-view" />;
 
     return (
-      <div className="main-view">
-        <Container>
-          <Row>
-            {selectedMovie ? (
-              <MovieView
-                movie={selectedMovie}
-                previous={(movie) => this.onMovieClick(!movie)}
-              />
-            ) : (
-                movies.map((movie) => (
-                <Col key={movie._id} xs={12} sm={6} md={4}>
-                  <MovieCard
-                    key={movie._id}
-                    movie={movie}
-                    click={(movie) => this.onMovieClick(movie)}
-                  />
-                </Col>
-              ))
-            )}
-          </Row>
-        </Container>
-      </div>
+        <Router>
+         <div className="main-view">
+           <Route exact path="/" render={() => {
+             if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
+             return <MoviesList movies={movies}/>;
+         }} />
+           <Route path="/register" render={() => <RegistrationView />} />
+           <Route path="/movies/:movieId" render={({match}) => <MovieView movie={movies.find(m => m._id === match.params.movieId)}/>}/>
+         </div>
+      </Router>
     );
   }
 }
+
+let mapStateToProps = state => {
+  return { movies: state.movies }
+}
+
+export default connect(mapStateToProps, { setMovies } )(MainView);
